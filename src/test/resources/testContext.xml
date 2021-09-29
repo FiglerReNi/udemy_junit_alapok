@@ -5,8 +5,5 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="sortAlgorithmImpl" class="hu.tmx.junit.exampleOne.service.impl.SortAlgorithmImpl"/>
-    <bean id="binarySearchSpring" class="hu.tmx.junit.exampleOne.service.BinarySearchSpring">
-        <property name="sortAlgorithmImpl" ref="sortAlgorithmImpl"/>
-    </bean>
+    <import resource="applicationContext.xml"/>
 </beans>
