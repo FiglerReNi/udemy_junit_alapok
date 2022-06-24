@@ -1,0 +1,53 @@
+Java:
+	○ A junit 5 dependency kell a pom.xml-be.
+	○ A teszt osztály neve ugyanaz mint az eredetié csak Test előtaggal.
+	○ A tesztelendő osztályból kell egy példányt csinálnunk.
+	○ @BeforeEach - setUp method - itt megadhatunk olyan dolgokat, amiket minden egyes teszteset előtt szeretnénk lefuttatni.
+	○ @AfterEach - tearDown method - itt minden teszteset után lefutó dolgokat adunk meg, pl ürítjük az objektumokat.
+	○ @BeforeAll – a tesztosztály első lépéseként fut le, minden előtt, mielőtt bármelyik teszteset lefutna. Static-nak kell lennie.
+	○ @AfterAll – a tesztosztály utolsó lépéseként fut le minden után. Static-nak kell lennie.
+	○ @Test - ezzel jelöljük a teszt eseteket
+	○ Ha exception várunk a tesztben azt a @Test(expected = vartException.class )-al tudjuk megadni
+	○ összehasonlítás:
+		▪ assertEquals
+		▪ assertTrue
+		▪ assertFalse
+		▪ assertNotNull
+		▪ assertNull
+		▪ assertAll
+		▪ assertArrayEquals
+	○ Mockolás:
+		Előfordul, hogy a kód amit unit teszttel tesztelünk, függ egy másik objektumtól. Ilyenkor ennek a másik objektumnak egy leegyszerűsített változatát használjuk a tesztünkbe, hiszen nem a kettő együttműködésére vagyunk kiváncsiak. Csak azért kell, hogy a unit teszt le tudjon futni.
+		Ezt a leegyszerűsített változatot létrehozhatjuk mockolással. Meg lehet oldani mockolás nélkül is ha csak egy egyszerűbb objektumról van szó. A mockolást akkor alkalmazzuk inkább, ha külső kapcsolatra lenne szükség, például adatbázis kapcsolatra, http requestet küldenénk stb.
+		Mockolás nélkül:
+			dummy object - csak azért hozzuk létre, mert pl paraméterként át kell adni, de nem tartalmaz implementációt
+			facke object - nagyon egyszerű implementáció, hogy egy adott függvénye vissza tudjon térni egy általunk megadott fix értékkel, ami helyes a teszt szempontjából
+		Mockolva:
+			Kell dependency hozzá a pom.xml-be -> mockito.core
+			stub object - mockitoval létrehozott objektum, amin beállítottuk hogy viselkedjen, de amit nem verifyoltunk még.
+			mock object - amit verifyoltunk, vagyis leellenőriztük, hogy a tesztelendő függvény tényleg használja-e azt a függőséget amit mockoltunk.
+		Annotációval:
+			@Mock – ezt a függőség fölé tesszük
+			@InjectMocks – ezt a fölé, aminek a függősége a @Mock
+			@ExtendWith(MockitoExtension.class) - osztály fölé
+		Annotáció nélkül:
+			Mockito.mock(OsztályAmitMockolniAkarunk.class) - ezt utána konstruktorban adjuk át az alap osztály példányosításakor
+		Használat:
+			when után ha megadunk egy általános minden esetre (paraméterre) igaz visszatérést, akkor nem adhatunk meg speciális esetet egy másik when-nel ugyanabban a tesztesetben.
+			Ha pedig megadtunk egy speciálisat, nem adhatunk meg általánosat.
+
+Spring:
+		Beállítások:
+			@ContextConfiguration(classes = UdemyJunitAlapokApplication.class) - teszt osztáy fölé, ezzel húzzuk be a beaneket tartalmazó contextet, xml konfiguráció esetén az xml-t kell behúzni ebbe az annotációba
+			@ExtendWith(SpringExtension.class) - teszt osztáy fölé, ezzel futtatjuk a contextet
+			A tesztelendő bean-t sima autowired-el húzzuk be
+			Ha mockito-t használunk akkor a fenti két annotáció nem kell, és nem az autowired-et, hanem az injectMock-ot használjuk
+
+SpringBoot:
+	○ A junit dependency benne van alapból.
+	○ Összehasonlítás
+		▪ assertThan().isEqualTo() - SpringBoot
+	○ Mockolás
+		A dependencyt nem kell behúzni, mert benne van alapból
+	○ SpringBoot RestController tesztelése úgy történik, hogy a teszt osztályban létre kell hoznunk egy virtuális szerver környezetet, ami elküldi a post requestet. A requestet a RequestBuilderrel állítjuk össze, és az MockMvc-vel tudjuk elküldeni, majd kivenni a választ. A response a http kódot is tartalmazza. Az osztály fölé kell a @WebMvcTest(value = HomeController.class) annotáció.
+	○ SprinBootban ha a tesztelendő osztályunkba injektálva van egy függőség, akkor a teszt osztályba is dependency injectionnal kell létrehoznunk a mockolt változatát. Erre van a @MockBean annotáció.
